@@ -40,6 +40,12 @@ Das Notebook `alignment_limits.ipynb` behandelt folgende Themen:
 - Fehlerwahrscheinlichkeit als Funktion von SNR_paper: Matching funktioniert weit unterhalb von 0 dB,
   weil die Kreuzkorrelation als Matched Filter das SNR um den Faktor √Nₚ anhebt
 
+### DC-Invarianz der Kreuzkorrelation
+- Unterschied zwischen SNR_I_total (inkl. DC) und SNR_I_ac (nur Wechselanteil)
+- Algebraischer Beweis: DC-Anteil µ addiert eine Konstante zu allen CC-Shifts → Argmax unverändert
+- Konsequenz für MSG: SNR_I_total = 46.8 dB ≫ SNR_I_ac = 10.7 dB, aber nur SNR_I_ac ist CC-relevant
+- Versagensschwelle liegt bei SNR_I_total ≈ 10 dB (nicht 0 dB), entspricht σ ≈ 93 K
+
 ## Voraussetzungen
 
 ```bash
