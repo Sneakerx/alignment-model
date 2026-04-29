@@ -19,33 +19,45 @@ cells.append(md(
 cells.append(md(
 r"""## Herleitung: Registrierungs-SNR (kartesische 2D-Form)
 
-### Systemkomponenten
+**Papier:** Aguerrebere et al., *Fundamental Limits in Multi-image Alignment*, arXiv:1602.01541
 
-| Größe | Symbol | Bedeutung |
-|-------|--------|-----------|
-| Signal-PSD | $S_\text{obj}(f_x, f_y)$ | Spektrale Leistungsdichte der Szene |
-| Kamera-MTF | $\text{MTF}(f_x, f_y)$ | Separierbar: $\text{MTF}_x(f_x)\cdot\text{MTF}_y(f_y)$ |
-| Rausch-PSD | $N(f_x, f_y)$ | Sensorrauschen (NEdT²; weißes Rauschen: $N = \sigma_n^2$) |
+### Formel-Referenzen aus dem Paper
 
-### Fisher-Information für $\tau_x$
+| Gl. | Inhalt |
+|-----|--------|
+| (2) | Beobachtungsmodell: $z_i = u(\mathbf{x} - \boldsymbol{\tau}_i) + n_i$, $\quad n_i \sim \mathcal{N}(0,\sigma^2)$ |
+| (33) | FIM-Definition (stochastisch): $\{J_S\}_{ih,jq} = \operatorname{tr}\!\left(\Sigma^{-1}\tfrac{\partial\Sigma}{\partial\tau_{ih}}\Sigma^{-1}\tfrac{\partial\Sigma}{\partial\tau_{jq}}\right)$ |
+| (36) | Spektrale FIM-Einträge: $\rho_{h,q} = \sum_l \dfrac{2S^2(\boldsymbol{\omega}_l)\,\omega_{lh}\,\omega_{lq}}{N^2(\boldsymbol{\omega}_l) + (K{+}1)\,S(\boldsymbol{\omega}_l)\,N(\boldsymbol{\omega}_l)}$ |
+| (38) | CRB-Ungleichung: $E[(\hat{\boldsymbol{\tau}}-\boldsymbol{\tau})(\hat{\boldsymbol{\tau}}-\boldsymbol{\tau})^\top] \geq J_S^{-1}$ |
+| (40) | CRBS (isotropes System): $\text{CRBS} = \dfrac{2}{(K{+}1)\,\rho_{xx}}$ |
+| **(41)** | **Hoher SNR:** $\text{CRBS}_\text{HSNR} = \dfrac{2\sigma^2(2\pi)^2}{N_p}\displaystyle\int S(\boldsymbol{\omega})\,\omega_x^2\,d\boldsymbol{\omega}$ $\;\Rightarrow\;$ unser $\text{RSNR}_x$ |
 
-Die Ableitung des verschobenen Bildes nach $\tau_x$ liefert im Fourier-Raum den Faktor $2\pi i f_x$:
+### Systemkomponenten (Erweiterung gegenüber dem Paper)
 
-$$\text{RSNR}_x = (2\pi)^2 \iint_{-f_N}^{f_N} f_x^2 \cdot \frac{\text{MTF}^2(f_x,f_y)\cdot S_\text{obj}(f_x,f_y)}{N(f_x,f_y)}\, df_x\, df_y$$
+| Größe | Symbol | Bezug zum Paper |
+|-------|--------|-----------------|
+| Signal-PSD | $S_\text{obj}(f_x, f_y)$ | $S(\boldsymbol{\omega})$ in Gl. (36) und (41) |
+| Kamera-MTF | $\text{MTF}(f_x, f_y)$ | **Neu** (nicht im Paper): $S_\text{img} = \text{MTF}^2 \cdot S_\text{obj}$ |
+| Rausch-PSD | $N(f_x, f_y)$ | $N(\boldsymbol{\omega})$ in Gl. (36); weißes Rauschen: $N = \sigma^2$ |
 
-Da der Integrand gerade in $f_x$ und $f_y$ ist, genügt der positive Quadrant (Faktor 4):
+### Von Gl. (41) zu unserem $\text{RSNR}_x$
+
+Gl. (41) gilt für ideale Kamera (MTF = 1), weißes Rauschen und $K = 1$ Bildpaar:
+$$\sigma_{\tau_x}^2 \geq \text{CRBS}_\text{HSNR} = \frac{2\sigma^2(2\pi)^2}{N_p} \iint S(f_x,f_y)\, f_x^2 \, df_x\, df_y$$
+
+Erweiterung auf Kamera mit MTF und farbigem Rauschen, umgestellt auf $\sigma_{\tau_x} \geq 1/\sqrt{N_p \cdot \text{RSNR}_x}$:
 
 $$\boxed{\text{RSNR}_x = 4(2\pi)^2 \int_0^{f_N}\!\!\int_0^{f_N} f_x^2 \cdot \frac{\text{MTF}^2(f_x,f_y)\cdot S_\text{obj}(f_x,f_y)}{N(f_x,f_y)}\, df_x\, df_y}$$
 
-Analog für $\tau_y$ mit $f_y^2$ im Zähler.
+Faktor 4: Symmetrie des Integranden über alle vier Quadranten. Analog für $\text{RSNR}_y$ mit $f_y^2$.
 
 ### Woher kommt der Faktor $f_x^2$ — und nicht $f^3$?
 
-Der Faktor $f_x^2$ ist die direkte kartesische Konsequenz der Fisher-Information für eine Verschiebung in $x$-Richtung: die Sensitivität des Signals auf $\tau_x$ ist proportional zum quadratischen $x$-Gradienten im Frequenzraum. Das $f^3$ der radialen Polarform ist kein eigenständiges physikalisches Prinzip — es entsteht erst durch die Koordinatentransformation $f_x^2 = r^2\cos^2\theta$ plus den Jacobian $r$, integriert über $\theta \in [0, 2\pi]$.
+Gl. (36) zeigt: der FIM-Eintrag $\rho_{h,q}$ enthält $\omega_{lh}\,\omega_{lq}$, also speziell für $h=q=x$ den Faktor $\omega_{lx}^2 = (2\pi f_x)^2$. Das ist die direkte kartesische Konsequenz der Fisher-Information. Das $f^3$ der radialen Polarform entsteht erst durch die Koordinatentransformation ($f_x^2 = r^2\cos^2\theta$ plus Jacobian $r$, integriert über $\theta$) — es ist kein eigenständiges physikalisches Prinzip.
 
-Für **anisotrope Systeme** (Push-Broom-Satelliten, unterschiedliche Pixelgröße je Achse) ist die kartesische Form zwingend: $\text{MTF}_x$ und $\text{MTF}_y$ dürfen getrennt modelliert werden, und die Kopplungsstruktur wird sichtbar.
+Für **anisotrope Systeme** ist die kartesische Form zwingend: $\text{MTF}_x$ und $\text{MTF}_y$ dürfen getrennt modelliert werden.
 
-### CRB-Untergrenze pro Achse
+### CRB-Untergrenze pro Achse (Gl. 38)
 
 $$\sigma_{\tau_x} \geq \frac{1}{\sqrt{N_p \cdot \text{RSNR}_x}}, \qquad \sigma_{\tau_y} \geq \frac{1}{\sqrt{N_p \cdot \text{RSNR}_y}}$$
 
@@ -465,6 +477,43 @@ fig.suptitle(f'$\\\\mathrm{{RSNR}}_x$-Budget  (N_p=128², σ_s={sigma_s_st} K, {
 plt.tight_layout()
 plt.savefig('cam_plot7_budget.png', dpi=150, bbox_inches='tight')
 plt.show()"""
+))
+
+# ── Cell 12: PDF Export ───────────────────────────────────────────────────────
+cells.append(md("## PDF-Export\n\nExportiert dieses Notebook als PDF (via WebPDF/Chromium)."))
+
+cells.append(code(
+"""import subprocess, pathlib, sys, glob as _glob
+
+nb_path  = pathlib.Path('camera_performance_model.ipynb').resolve()
+html_path = nb_path.with_suffix('.html')
+pdf_path  = nb_path.with_suffix('.pdf')
+
+# Schritt 1: Notebook → HTML (funktioniert immer)
+r1 = subprocess.run(
+    [sys.executable, '-m', 'jupyter', 'nbconvert',
+     '--to', 'html', '--no-input',
+     '--output', str(html_path), str(nb_path)],
+    capture_output=True, text=True)
+if r1.returncode != 0:
+    print('HTML-Export fehlgeschlagen:', r1.stderr[-400:])
+    raise SystemExit(1)
+
+# Schritt 2: HTML → PDF via Chromium headless (kein LaTeX, kein asyncio)
+chromium_glob = _glob.glob(
+    str(pathlib.Path.home() / 'AppData/Local/ms-playwright/chromium-*/chrome-win64/chrome.exe'))
+chromium = chromium_glob[0] if chromium_glob else 'chromium'
+
+r2 = subprocess.run(
+    [chromium, '--headless', '--no-sandbox', '--disable-gpu',
+     f'--print-to-pdf={pdf_path}', '--print-to-pdf-no-header',
+     html_path.as_uri()],
+    capture_output=True, text=True, timeout=120)
+
+if pdf_path.exists():
+    print(f'PDF gespeichert ({pdf_path.stat().st_size//1024} KB): {pdf_path}')
+else:
+    print('PDF-Export fehlgeschlagen:', r2.stderr[-400:])"""
 ))
 
 # ── Assemble notebook ─────────────────────────────────────────────────────────
