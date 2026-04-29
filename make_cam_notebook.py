@@ -43,13 +43,13 @@ Analog für $\tau_y$ mit $f_y^2$ im Zähler.
 
 Der Faktor $f_x^2$ ist die direkte kartesische Konsequenz der Fisher-Information für eine Verschiebung in $x$-Richtung: die Sensitivität des Signals auf $\tau_x$ ist proportional zum quadratischen $x$-Gradienten im Frequenzraum. Das $f^3$ der radialen Polarform ist kein eigenständiges physikalisches Prinzip — es entsteht erst durch die Koordinatentransformation $f_x^2 = r^2\cos^2\theta$ plus den Jacobian $r$, integriert über $\theta \in [0, 2\pi]$.
 
-Für **anisotrope Systeme** (Push-Broom-Satelliten, unterschiedliche Pixelgröße je Achse) ist die kartesische Form zwingend: MTF$_x$ und MTF$_y$ dürfen getrennt modelliert werden, und die Kopplungsstruktur wird sichtbar.
+Für **anisotrope Systeme** (Push-Broom-Satelliten, unterschiedliche Pixelgröße je Achse) ist die kartesische Form zwingend: $\text{MTF}_x$ und $\text{MTF}_y$ dürfen getrennt modelliert werden, und die Kopplungsstruktur wird sichtbar.
 
 ### CRB-Untergrenze pro Achse
 
 $$\sigma_{\tau_x} \geq \frac{1}{\sqrt{N_p \cdot \text{RSNR}_x}}, \qquad \sigma_{\tau_y} \geq \frac{1}{\sqrt{N_p \cdot \text{RSNR}_y}}$$
 
-**Wichtige Eigenschaft:** RSNR$_x$ hängt von MTF$_x$ quadratisch ab (wegen $f_x^2$), aber MTF$_y$ geht nur als Energiefaktor ohne $f_y^2$-Gewichtung ein. Eine schlechte $y$-Auflösung schadet der $x$-Registrierung deshalb wesentlich weniger als eine schlechte $x$-Auflösung."""
+**Wichtige Eigenschaft:** $\text{RSNR}_x$ hängt von $\text{MTF}_x$ quadratisch ab (wegen $f_x^2$), aber $\text{MTF}_y$ geht nur als Energiefaktor ohne $f_y^2$-Gewichtung ein. Eine schlechte $y$-Auflösung schadet der $x$-Registrierung deshalb wesentlich weniger als eine schlechte $x$-Auflösung."""
 ))
 
 # ── Cell 3: Imports + 2D grid ─────────────────────────────────────────────────
@@ -163,18 +163,18 @@ cs2 = ax.contourf(fx, fy, ig_x, levels=60, cmap='viridis',
                   norm=mcolors.LogNorm(vmin=ig_x.max()*1e-4, vmax=ig_x.max()))
 plt.colorbar(cs2, ax=ax, label='$f_x^2 \\\\cdot \\\\mathrm{MTF}^2 \\\\cdot S/N$')
 ax.set_xlabel('$f_x$'); ax.set_ylabel('$f_y$')
-ax.set_title(f'RSNR$_x$-Integrand  (MTF_Nyq={q_ref})'); ax.set_aspect('equal')
+ax.set_title(f'$\\\\mathrm{{RSNR}}_x$-Integrand  (MTF_Nyq={q_ref})'); ax.set_aspect('equal')
 
 ax = axes[2]
 marg_x = trapezoid(ig_x,           fy, axis=0)  # ∫ df_y → f(f_x)
 marg_y = trapezoid(ig_x,           fx, axis=1)  # ∫ df_x → f(f_y); wie trägt f_y zu RSNR_x bei?
 ig_y   = FY**2 * M_ref**2 * S_ref / N_ref
 marg_yy = trapezoid(ig_y,          fx, axis=1)  # RSNR_y-Marginal in f_y
-ax.semilogy(fx, marg_x  / marg_x.max(),  'C0-',  lw=2, label='RSNR$_x$: Marginal in $f_x$ (mit $f_x^2$)')
-ax.semilogy(fy, marg_y  / marg_y.max(),  'C0--', lw=2, label='RSNR$_x$: Marginal in $f_y$ (ohne $f_y^2$)')
-ax.semilogy(fy, marg_yy / marg_yy.max(), 'C1-',  lw=2, label='RSNR$_y$: Marginal in $f_y$ (mit $f_y^2$)')
+ax.semilogy(fx, marg_x  / marg_x.max(),  'C0-',  lw=2, label='$\\\\mathrm{RSNR}_x$: Marginal in $f_x$ (mit $f_x^2$)')
+ax.semilogy(fy, marg_y  / marg_y.max(),  'C0--', lw=2, label='$\\\\mathrm{RSNR}_x$: Marginal in $f_y$ (ohne $f_y^2$)')
+ax.semilogy(fy, marg_yy / marg_yy.max(), 'C1-',  lw=2, label='$\\\\mathrm{RSNR}_y$: Marginal in $f_y$ (mit $f_y^2$)')
 ax.set_xlabel('f [Zyklen/Pixel]'); ax.set_ylabel('Normierter Beitrag')
-ax.set_title('Marginale RSNR-Beiträge\\n(f_y-Marginal von RSNR$_x$ ist flacher wg. fehlendem $f_y^2$)')
+ax.set_title('Marginale RSNR-Beiträge\\n(f_y-Marginal von $\\\\mathrm{RSNR}_x$ ist flacher wg. fehlendem $f_y^2$)')
 ax.legend(fontsize=8.5)
 
 fig.suptitle(f'2D Signal-PSD und RSNR-Integrand  (MTF_Nyq={q_ref}, NEdT={nedt_ref} K)', fontsize=12)
@@ -256,7 +256,7 @@ for q, col in zip([0.50, 0.30, 0.15, 0.05], ['C2','C0','C1','C3']):
     ig = FX**2 * mtf_2d(q, q)**2 * S_st / N_st
     marg = trapezoid(ig, fy, axis=0)   # marginal in f_x
     ax2.semilogy(fx, marg / marg.max(), color=col, label=f'MTF_Nyq = {q:.2f}')
-ax2.set_xlabel('$f_x$ [Zyklen/Pixel]'); ax2.set_ylabel('Norm. RSNR$_x$-Beitrag in $f_x$')
+ax2.set_xlabel('$f_x$ [Zyklen/Pixel]'); ax2.set_ylabel('Norm. $\\\\mathrm{RSNR}_x$-Beitrag in $f_x$')
 ax2.set_title('Marginal-Integrand in $f_x$\\n(MTF begrenzt nutzbare hohe Frequenzen)')
 ax2.legend(fontsize=9)
 
@@ -273,7 +273,7 @@ for q_m in [0.05, 0.10, 0.20, 0.30, 0.50]:
 cells.append(md(
 r"""## Parameterstudie II: Anisotrope MTF — $\text{MTF}_x \neq \text{MTF}_y$
 
-**Schlüsselergebnis:** RSNR$_x$ ist empfindlich auf MTF$_x$ (wegen $f_x^2$-Gewichtung), aber relativ unempfindlich auf MTF$_y$ (nur Energiefaktor, kein $f_y^2$). Für die $x$-Registrierung ist die $x$-Schärfe dominierend."""
+**Schlüsselergebnis:** $\text{RSNR}_x$ ist empfindlich auf $\text{MTF}_x$ (wegen $f_x^2$-Gewichtung), aber relativ unempfindlich auf $\text{MTF}_y$ (nur Energiefaktor, kein $f_y^2$). Für die $x$-Registrierung ist die $x$-Schärfe dominierend."""
 ))
 
 cells.append(code(
@@ -294,12 +294,12 @@ for i, q in enumerate(q_arr2):
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 ax = axes[0]
-ax.semilogy(q_arr2, sig_x_vx, 'C0-',  lw=2.5, label=f'MTF$_y$={q_fix} fix → σ_τx(MTF$_x$)')
-ax.semilogy(q_arr2, sig_x_vy, 'C0--', lw=2.5, label=f'MTF$_x$={q_fix} fix → σ_τx(MTF$_y$)')
-ax.semilogy(q_arr2, sig_y_vy, 'C1--', lw=2.5, label=f'MTF$_x$={q_fix} fix → σ_τy(MTF$_y$)')
+ax.semilogy(q_arr2, sig_x_vx, 'C0-',  lw=2.5, label=f'$\\\\mathrm{{MTF}}_y$={q_fix} fix → σ_τx($\\\\mathrm{{MTF}}_x$)')
+ax.semilogy(q_arr2, sig_x_vy, 'C0--', lw=2.5, label=f'$\\\\mathrm{{MTF}}_x$={q_fix} fix → σ_τx($\\\\mathrm{{MTF}}_y$)')
+ax.semilogy(q_arr2, sig_y_vy, 'C1--', lw=2.5, label=f'$\\\\mathrm{{MTF}}_x$={q_fix} fix → σ_τy($\\\\mathrm{{MTF}}_y$)')
 ax.axvline(q_fix, color='gray', ls=':', lw=1)
 ax.set_xlabel('MTF bei Nyquist (variierte Achse)'); ax.set_ylabel('σ_τ [Millipixel]')
-ax.set_title('Empfindlichkeit: σ_τx auf MTF$_x$ vs. MTF$_y$\\n'
+ax.set_title('Empfindlichkeit: σ_τx auf $\\\\mathrm{MTF}_x$ vs. $\\\\mathrm{MTF}_y$\\n'
              '(gestrichelt: MTF der anderen Achse hat viel schwächeren Einfluss)')
 ax.legend(fontsize=9)
 
@@ -319,8 +319,8 @@ ct = ax2.contour(q_hm2, q_hm2, heat_x, levels=[5, 10, 20, 50, 100],
 ax2.clabel(ct, fmt=lambda v: f'{v:.0f} mpx', fontsize=8)
 plt.colorbar(cs, ax=ax2, label='σ_τx [Millipixel]')
 ax2.plot([q_fix], [q_fix], 'w*', ms=12, zorder=5, label='Isotrop q=0.20')
-ax2.set_xlabel('MTF$_x$ bei Nyquist'); ax2.set_ylabel('MTF$_y$ bei Nyquist')
-ax2.set_title('σ_τx(MTF$_x$, MTF$_y$)\\n(Konturlinien fast vertikal → MTF$_x$ dominiert)')
+ax2.set_xlabel('$\\\\mathrm{MTF}_x$ bei Nyquist'); ax2.set_ylabel('$\\\\mathrm{MTF}_y$ bei Nyquist')
+ax2.set_title('σ_τx($\\\\mathrm{MTF}_x$, $\\\\mathrm{MTF}_y$)\\n(Konturlinien fast vertikal → $\\\\mathrm{MTF}_x$ dominiert)')
 ax2.legend(fontsize=9)
 
 fig.suptitle('Anisotrope MTF: kartesische Kopplung zwischen den Achsen', fontsize=12)
@@ -456,12 +456,12 @@ for ci, (name, p) in enumerate(scenarios.items()):
     ax2.axvline(f50, color='gray', ls='--', lw=1, label=f'50 %: {f50:.3f} cpx')
     ax2.axvline(f90, color='gray', ls=':',  lw=1, label=f'90 %: {f90:.3f} cpx')
     ax2.set_xlabel('$f_x$ [Zyklen/Pixel]'); ax2.set_ylabel('Anteil')
-    ax2.set_title('Marginal-Analyse RSNR$_x$ in $f_x$')
+    ax2.set_title('Marginal-Analyse $\\\\mathrm{RSNR}_x$ in $f_x$')
     ax2.legend(fontsize=8)
 
     print(f"{name}: σ_τ={sig_i:.0f} mpx | 50%: f_x={f50:.3f} | 90%: f_x={f90:.3f} cpx")
 
-fig.suptitle(f'RSNR$_x$-Budget  (N_p=128², σ_s={sigma_s_st} K, {pix_km} km/Pixel)', fontsize=13)
+fig.suptitle(f'$\\\\mathrm{{RSNR}}_x$-Budget  (N_p=128², σ_s={sigma_s_st} K, {pix_km} km/Pixel)', fontsize=13)
 plt.tight_layout()
 plt.savefig('cam_plot7_budget.png', dpi=150, bbox_inches='tight')
 plt.show()"""
